@@ -11,9 +11,28 @@ const LoginScreen = ({ navigation }) => {
   const [username, setUsername] = useState("sample@gmail.com");
   const [password, setPassword] = useState("1234");
 
-  const handleSignIn = () => {
-    // Logic for signing in
-    navigation.navigate("Home");
+  const handleLoginSubmit = async (data) => {
+    try {
+      const response = await fetch(
+        "https://student-monitoring-backend.onrender.com/api/faculty/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        }
+      );
+
+      const responseData = await response.json();
+      if (response.status === 200) {
+        navigation.navigate("Home");
+        setLogin(true);
+      }
+      console.log(responseData);
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
 
   return (
@@ -32,14 +51,14 @@ const LoginScreen = ({ navigation }) => {
         value={password}
         onChangeText={setPassword}
       />
-      <TouchableOpacity style={styles.button} onPress={handleSignIn}>
+      <TouchableOpacity style={styles.button} onPress={handleLoginSubmit}>
         <Text style={styles.buttonText}>Sign In</Text>
       </TouchableOpacity>
       <TouchableOpacity
         style={[styles.button, { backgroundColor: "#4CAF50" }]}
         onPress={() => navigation.navigate("Register")}
       >
-        <Text style={styles.buttonText}>Register</Text>
+        {/* <Text style={styles.buttonText}>Register</Text> */}
       </TouchableOpacity>
     </View>
   );
