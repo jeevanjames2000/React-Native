@@ -12,10 +12,11 @@ import { Camera } from "expo-camera";
 const HomeScreen = () => {
   const [hasPermission, setHasPermission] = useState(null);
   const [scannedData, setScannedData] = useState(null);
-  console.log("scannedData: ", scannedData);
   const [cameraRef, setCameraRef] = useState(null);
+
   const screen = Dimensions.get("window");
   const [userData, setUserData] = useState(null);
+
   const requestCameraPermission = async () => {
     if (Platform.OS === "web") {
       setHasPermission(true);
@@ -47,7 +48,7 @@ const HomeScreen = () => {
           "https://student-monitoring-backend.onrender.com/api/students/entryStudent";
       } else if (userData.user === "faculty") {
         requestbody = {
-          employeeId: userData.employeeId,
+          emplyoeeId: userData.emplyoeeId,
         };
         apiUrl =
           "https://student-monitoring-backend.onrender.com/api/faculty/entryFaculty";
@@ -60,8 +61,11 @@ const HomeScreen = () => {
         },
         body: JSON.stringify(requestbody),
       });
-
+      if (response.ok) {
+        alert("Entry Time Saved");
+      }
       if (!response.ok) {
+        alert("Invalid Details");
         throw new Error("Network response was not ok");
       }
 
@@ -85,7 +89,7 @@ const HomeScreen = () => {
           "https://student-monitoring-backend.onrender.com/api/students/exitStudent";
       } else if (userData.user === "faculty") {
         requestbody = {
-          employeeId: userData.employeeId,
+          emplyoeeId: userData.emplyoeeId,
         };
         apiUrl =
           "https://student-monitoring-backend.onrender.com/api/faculty/exitFaculty";
@@ -99,7 +103,11 @@ const HomeScreen = () => {
         body: JSON.stringify(requestbody),
       });
 
+      if (response.ok) {
+        alert("Exit Time Saved");
+      }
       if (!response.ok) {
+        alert("Invalid Details");
         throw new Error("Network response was not ok");
       }
 
@@ -142,14 +150,15 @@ const HomeScreen = () => {
                 ) : (
                   <Text style={styles.cardText}>
                     Employee Id:{" "}
-                    <Text style={styles.bold}>{userData.employeeId}</Text>
+                    <Text style={styles.bold}>{userData.emplyoeeId}</Text>
                   </Text>
                 )}
               </View>
             ) : (
               <Text style={styles.overlayText}>Point camera at barcode</Text>
             )}
-
+          </View>
+          <View>
             {scannedData && (
               <TouchableOpacity
                 style={styles.scanAgainButton}
@@ -174,6 +183,7 @@ const HomeScreen = () => {
               <Text style={styles.buttonText}>Exit</Text>
             </TouchableOpacity>
           </View>
+
           {/* Render user details in a card view */}
         </View>
       )}
@@ -231,8 +241,10 @@ const styles = StyleSheet.create({
   },
   scanAgainButton: {
     backgroundColor: "blue",
-    paddingVertical: 10,
-    paddingHorizontal: 20,
+    paddingVertical: 20,
+    paddingHorizontal: 10,
+    justifyContent: "center",
+    alignItems: "center",
     borderRadius: 5,
     marginTop: 10,
   },
@@ -242,7 +254,7 @@ const styles = StyleSheet.create({
   },
   cardContainer: {
     backgroundColor: "lightgray",
-    padding: 20,
+    padding: 30,
     borderRadius: 10,
     marginTop: 20,
     alignSelf: "center",

@@ -8,10 +8,14 @@ import {
 } from "react-native";
 
 const LoginScreen = ({ navigation }) => {
-  const [username, setUsername] = useState("sample@gmail.com");
-  const [password, setPassword] = useState("1234");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
-  const handleLoginSubmit = async (data) => {
+  const handleLoginSubmit = async () => {
+    const data = {
+      userName: username,
+      password: password,
+    };
     try {
       const response = await fetch(
         "https://student-monitoring-backend.onrender.com/api/faculty/login",
@@ -25,15 +29,23 @@ const LoginScreen = ({ navigation }) => {
       );
 
       const responseData = await response.json();
-      if (response.status === 200) {
+      console.log("response", response.status);
+      if (response.ok) {
+        alert("Login Success");
         navigation.navigate("Home");
-        setLogin(true);
       }
-      console.log(responseData);
+      if (!response.ok) {
+        alert("Invalid Credentials");
+      }
     } catch (error) {
+      alert("Login Failed", error);
       console.error("Error:", error);
     }
   };
+
+  // const handleLoginSubmit = () => {
+  //   navigation.navigate("Home");
+  // };
 
   return (
     <View style={styles.container}>
@@ -53,12 +65,6 @@ const LoginScreen = ({ navigation }) => {
       />
       <TouchableOpacity style={styles.button} onPress={handleLoginSubmit}>
         <Text style={styles.buttonText}>Sign In</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={[styles.button, { backgroundColor: "#4CAF50" }]}
-        onPress={() => navigation.navigate("Register")}
-      >
-        {/* <Text style={styles.buttonText}>Register</Text> */}
       </TouchableOpacity>
     </View>
   );
